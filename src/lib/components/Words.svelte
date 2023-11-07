@@ -53,8 +53,8 @@
                 },
                 { //underscore
                     rotation: "0deg",
-                    y: "-0rem",
-                    x: "-0rem"
+                    y: "0rem",
+                    x: "0rem"
                 },
                 {
                     rotation: "-19deg",
@@ -216,7 +216,7 @@ const displayText = (data: displayTextInterface) => {
         const rotation = data.transform[i].rotation;
 
         if (data.text[i] === "_") {
-            wordArray.push(`<div class="p-1 inline"></div>`);
+            wordArray.push(`<div class="p-1 mx-1 inline"></div>`);
         } else {
             const delay = i * 0.05; // Adjust this multiplier to change the delay between each span
 

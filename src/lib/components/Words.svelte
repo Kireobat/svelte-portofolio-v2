@@ -1,5 +1,19 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import Layout from "../../routes/+layout.svelte";
+
+    export let isDisabled: boolean;
+
+    $: {
+        if (isDisabled == true) {
+            wordCurrentColor = inactiveColor
+            phoneCurrentColor = inactiveColor
+            emailCurrentColor = inactiveColor
+            githubCurrentColor = inactiveColor
+        } else {
+            reset()
+        }
+    }
 
     interface transformInterface {
         rotation: string;
@@ -22,7 +36,7 @@
 
 
     const normalColor = "#ffffff"
-    const inactiveColor = "#a4a4a4"
+    const inactiveColor = "#141414"
 
     let wordCurrentColor = normalColor
     let phoneCurrentColor = normalColor
@@ -36,72 +50,72 @@
             text: "+47_407_21_416",
             color: "#5fa0df",
             transform: [
-                {
+                { // +
                     rotation: "10deg",
                     y: "-1.5rem",
                     x: "-1.5rem"
                 },
-                {
+                { // 4
                     rotation: "-3deg",
                     y: "0rem",
                     x: "-1.5rem"
                 },
-                {
+                { // 7
                     rotation: "10deg",
                     y: "-1.5rem",
                     x: "-1rem"
                 },
-                { //underscore
-                    rotation: "0deg",
-                    y: "0rem",
-                    x: "0rem"
+                { // 4
+                    rotation: "14deg",
+                    y: "-0.5rem",
+                    x: "-1rem"
                 },
-                {
+                { // 0
                     rotation: "-19deg",
                     y: "0rem",
                     x: "-1rem"
                 },
-                {
+                { // 7
                     rotation: "-14deg",
                     y: "-1rem",
                     x: "-1rem"
                 },
-                {
+                { // 2
                     rotation: "6deg",
                     y: "0rem",
                     x: "-0.5rem"
                 },
-                { //underscore
-                    rotation: "0deg",
-                    y: "0rem",
-                    x: "0rem"
-                },
-                {
+                { // 1
                     rotation: "-3deg",
                     y: "0.5rem",
                     x: "0rem"
                 },
-                {
+                { // 4
                     rotation: "13deg",
                     y: "-1.5rem",
                     x: "0rem"
                 },
-                { // underscore
-                    rotation: "0deg",
-                    y: "0rem",
-                    x: "0rem"
-                },
-                {
+                { // 1
                     rotation: "-6deg",
                     y: "0rem",
                     x: "0.5rem"
                 },
-                {
+                { // 6
+                    rotation: "12deg",
+                    y: "-1rem",
+                    x: "1rem"
+                },
+                { // do not remove
+                    rotation: "-6deg",
+                    y: "0rem",
+                    x: "0.5rem"
+                },
+                { // do not remove
                     rotation: "9deg",
                     y: "-1rem",
                     x: "1rem"
                 },
-                {
+                { // do not remove
                     rotation: "-5deg",
                     y: "-0.5rem",
                     x: "1rem"
@@ -178,6 +192,9 @@
     }
 
 const hoverPhone = () => {
+    if (isDisabled == true) {
+        return
+    }
     wordCurrentColor = inactiveColor
     phoneCurrentColor = data.phone.color
     emailCurrentColor = inactiveColor
@@ -185,6 +202,9 @@ const hoverPhone = () => {
 }
 
 const hoverEmail = () => {
+    if (isDisabled == true) {
+        return
+    }
     wordCurrentColor = inactiveColor
     phoneCurrentColor = inactiveColor
     emailCurrentColor = data.email.color
@@ -192,6 +212,9 @@ const hoverEmail = () => {
 }
 
 const hoverGithub = () => {
+    if (isDisabled == true) {
+        return
+    }
     wordCurrentColor = inactiveColor
     phoneCurrentColor = inactiveColor
     emailCurrentColor = inactiveColor
@@ -216,7 +239,7 @@ const displayText = (data: displayTextInterface) => {
         const rotation = data.transform[i].rotation;
 
         if (data.text[i] === "_") {
-            wordArray.push(`<div class="p-1 mx-1 inline"></div>`);
+            wordArray.push(`<div class="p-1 mx-0.5 sm:mx-1 lg:mx-2 inline"></div>`);
         } else {
             const delay = i * 0.05; // Adjust this multiplier to change the delay between each span
 
@@ -224,14 +247,20 @@ const displayText = (data: displayTextInterface) => {
             const yMove = data.transform[i].y;
             const rotation = data.transform[i].rotation;
 
-            const spanClass = `hover:bg-slate-500 inline-block`; // Adjust this to match your Tailwind CSS classes
-            const span = `<span class="${spanClass}" style="transition-delay: ${delay}s; transform: translate(${xMove}, ${yMove}) rotate(${rotation});">${data.text[i]}</span>`;
+            const spanClass = `inline-block`; // Adjust this to match your Tailwind CSS classes
+            const span = `<span class="${spanClass}" style="transform: translate(${xMove}, ${yMove}) rotate(${rotation}); transition-duration: 500ms;">${data.text[i]}</span>`;
             
             wordArray.push(span);
         }
     }
     return wordArray.join("")
 }
+
+onMount(() => {
+    resetSpans("phone")
+    resetSpans("email")
+    resetSpans("github")
+})
 
 const transformSpans = (id: string) =>{
     if (lastTransformedId === id) {
@@ -281,10 +310,19 @@ const resetSpans = (id: string) =>{
         <p  style="color: {wordCurrentColor}; transition: color 0.3s;">Programmer</p>
     </div>
     <div class="flex justify-between">
-        <p on:mouseover={()=>{hoverPhone(); transformSpans("phone");}} on:focus={hoverPhone} on:mouseleave={()=>{reset(); resetSpans("phone")}} style="color: {phoneCurrentColor}; transition: color 0.3s;" id="phone">{@html displayText(data.phone)}</p>
+        {#if isDisabled == false}
+        <a href="tel:+4740721416" on:mouseover={()=>{hoverPhone(); transformSpans("phone");}} on:focus={hoverPhone} on:mouseleave={()=>{reset(); resetSpans("phone")}} style="color: {phoneCurrentColor}; transition: color 0.3s;" id="phone">{@html displayText(data.phone)}</a>
+        {:else}
+        <p style="color: {inactiveColor};">+47 407 21 416</p>
+        {/if}
     </div>
     <div class="flex justify-between">
-        <p on:mouseover={()=>{hoverEmail(); transformSpans("email");}} on:focus={hoverEmail} on:mouseleave={()=>{reset(); resetSpans("email")}} style="color: {emailCurrentColor}; transition: color 0.3s;" id="email">{@html displayText(data.email)}</p>
-        <p on:mouseover={()=>{hoverGithub(); transformSpans("github");}} on:focus={hoverGithub} on:mouseleave={()=>{reset(); resetSpans("github")}} style="color: {githubCurrentColor}; transition: color 0.3s;" id="github">{@html displayText(data.github)}</p>
+        {#if isDisabled == false}
+        <a href="mailto:erik.flatabo@gmail.com" on:mouseover={()=>{hoverEmail(); transformSpans("email");}} on:focus={hoverEmail} on:mouseleave={()=>{reset(); resetSpans("email")}} style="color: {emailCurrentColor}; transition: color 0.3s;" id="email">{@html displayText(data.email)}</a>
+        <a href="https://github.kireobat.eu" target="_blank" on:mouseover={()=>{hoverGithub(); transformSpans("github");}} on:focus={hoverGithub} on:mouseleave={()=>{reset(); resetSpans("github")}} style="color: {githubCurrentColor}; transition: color 0.3s;" id="github">{@html displayText(data.github)}</a>
+        {:else}
+        <p style="color: {inactiveColor};">Email</p>
+        <p style="color: {inactiveColor};">Github</p>
+        {/if}
     </div>
 </div>

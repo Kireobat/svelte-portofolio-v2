@@ -11,3 +11,4 @@
         <TimelineItem data={item}/>
     {/each}                
 </ol>
+<div class="relative border-l border-gray-700 border-dashed h-6 -translate-y-10"/>

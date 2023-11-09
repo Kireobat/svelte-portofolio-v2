@@ -4,7 +4,7 @@
     import ScrollDownIndicator from "$lib/components/ScrollDownIndicator.svelte";
     import Timeline from "$lib/components/timeline/Timeline.svelte";
     import Words from "$lib/components/Words.svelte";
-    import { onMount } from "svelte";
+    import { onDestroy, onMount } from "svelte";
 
     let scrollY: number = 0;
     let wordsScale: number = 1;
@@ -16,30 +16,39 @@
 
     let svgFill: string = 'white';
 
-    onMount(() => {
-        window.addEventListener('scroll', () => {
-            scrollY = window.scrollY;
-        });
-        
+    const calibrateOffset = () => {
         windowHeight = window.innerHeight;
-        offset = windowHeight * 1.3;
+        offset = Math.floor(windowHeight * 1.05);
 
         const textContainer = document.getElementById('textContainer');
+
         if (textContainer) {
             textContainer.style.transform = `translateY(${offset}px)`;
             textContainerLoaded = true;
         } else {
             console.log('textContainer not found');
         }
-    });
+    }
+
+    onMount(() => {
+        window.addEventListener('scroll', () => {
+            scrollY = window.scrollY;
+        });
+        
+        window.addEventListener('resize', calibrateOffset);
+
+        calibrateOffset();
+});
 
     $: {
-        if (Math.floor(scrollY) > windowHeight / 4) {
+        if (Math.floor(scrollY) > windowHeight / 6) {
         wordsScale = 0.5;
         wordsDisabled = true;
         svgFill = 'black';
         } else { wordsScale = 1; wordsDisabled = false; svgFill = 'white';}
     }
+
+    
 
     const data: TimelineInterface = [
         {

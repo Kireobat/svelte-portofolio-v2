@@ -248,7 +248,7 @@ const displayText = (data: displayTextInterface) => {
         const rotation = data.transform[i].rotation;
 
         if (data.text[i] === " ") {
-            wordArray.push(`<div class="p-1 mx-0.5 sm:mx-1 lg:mx-2 inline"></div>`);
+            wordArray.push(`<div class="p-1 mx-[0.165rem] sm:mx-[0.27rem] md:mx-1.5 lg:mx-[0.575rem] inline"></div>`);
         } else {
             const delay = i * 0.05; // Adjust this multiplier to change the delay between each span
 
@@ -312,7 +312,7 @@ const resetSpans = (id: string) =>{
     </div>
     <div class="flex justify-between">
         <p  style="color: {wordCurrentColor}; transition: color 0.3s;">&</p>
-        <p  style="color: {wordCurrentColor}; transition: color 0.3s;">Programmer</p>
+        <p  style="color: {wordCurrentColor}; transition: color 0.3s;">IT-Engineer</p>
     </div>
     <div class="flex justify-between">
         {#if isDisabled == false}

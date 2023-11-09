@@ -1,14 +1,20 @@
-<script>
+<script lang="ts">
+    import type { TimelineInterface } from "$lib/interfaces"
+
+    import ScrollDownIndicator from "$lib/components/ScrollDownIndicator.svelte";
+    import Timeline from "$lib/components/timeline/Timeline.svelte";
     import Words from "$lib/components/Words.svelte";
     import { onMount } from "svelte";
 
-    let scrollY = 0;
-    let wordsScale = 1;
-    let wordsDisabled = false;
-    let windowHeight = 200
-    let offset = 0;
+    let scrollY: number = 0;
+    let wordsScale: number = 1;
+    let wordsDisabled: boolean = false;
+    let windowHeight: number = 200
+    let offset: number = 0;
 
-    let textContainerLoaded = false;
+    let textContainerLoaded: boolean = false;
+
+    let svgFill: string = 'white';
 
     onMount(() => {
         window.addEventListener('scroll', () => {
@@ -31,8 +37,31 @@
         if (Math.floor(scrollY) > windowHeight / 4) {
         wordsScale = 0.5;
         wordsDisabled = true;
-        } else { wordsScale = 1; wordsDisabled = false; }
+        svgFill = 'black';
+        } else { wordsScale = 1; wordsDisabled = false; svgFill = 'white';}
     }
+
+    const data: TimelineInterface = [
+        {
+            date: 'August 2021 - June 2023',
+            title: 'Started my journey',
+            description: 'I started my education in programming at Amalie Skram Videregående Skole.'
+        },
+        {
+            date: 'January 2023 - June 2023',
+            title: 'My first job in web development',
+            description: 'I got my first job as a web developer at a company called Bergens Tidene as an unpaid intern.',
+            link: 'https://www.bt.no/byliv/i/0Q0OXM/badeplasser-i-bergen-hvor-kan-du-bade-og-hva-er-badetemperaturene',
+            linkText: 'Some of my work at Bergens Tidene'
+        },
+        {
+            date: 'August 2023 - August 2025',
+            title: 'Apprenticeship at Fiskeridirektoratet',
+            description: 'This apprenticeship is a part of my education at Amalie Skram Videregående Skole. I am learning both frontend and backend development. Mostly using React and Java.',
+            link: 'https://www.fiskeridir.no/Om-oss/Avdelinger-og-regioner/it-avdelingen/seksjon-systemutvikling/erik-flatebo',
+            linkText: 'Read more about my apprenticeship here'
+        }
+    ];
 
 </script>
 <main class="bg-black h-[300vh]">
@@ -41,12 +70,10 @@
             <Words isDisabled={wordsDisabled}/>
         </div>
     </div>
-    <div class="z-40 text-white" id="textContainer">
+    <ScrollDownIndicator svgFill={svgFill}/>
+    <div class="z-40 text-white ml-4" id="textContainer">
         {#if textContainerLoaded}
-            <img class="h-32" alt="img" src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D">
-            <h1>Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro quibusdam ex earum nihil maiores repudiandae doloremque minima hic dolor error! Necessitatibus voluptatem harum quo repudiandae eaque qui in laborum dicta?</h1>
-            <h1>Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro quibusdam ex earum nihil maiores repudiandae doloremque minima hic dolor error! Necessitatibus voluptatem harum quo repudiandae eaque qui in laborum dicta?</h1>
-            <h1>Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro quibusdam ex earum nihil maiores repudiandae doloremque minima hic dolor error! Necessitatibus voluptatem harum quo repudiandae eaque qui in laborum dicta?</h1>
+            <Timeline data={data}/>
         {/if}
     </div>
 </main>

@@ -6,7 +6,26 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		%sveltekit.head%
 	</head>
-	<body data-sveltekit-preload-data="hover" style="height: 100vh;">
+	<body data-sveltekit-preload-data="hover" style="height: 100vh;" class="hideScroll" id="scrollingBlock">
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>
+
+<style>
+
+	@-moz-document url-prefix() { /* Firefox */
+		html{
+			scrollbar-width: none;
+		}
+	}
+
+	.hideScroll::-webkit-scrollbar { display: none; }
+	.hideScroll {
+  	-ms-overflow-style: none;  /* IE and Edge */
+  	scrollbar-width: none;     /* Firefox */
+	}
+	#scrollingBlock {
+		/*box-shadow: 10px 5px 5px red;*/
+		overflow-y: scroll;
+	}
+</style>

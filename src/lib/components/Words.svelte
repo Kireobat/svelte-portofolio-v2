@@ -6,12 +6,16 @@
 
     $: {
         if (isDisabled == true) {
-            wordCurrentColor = inactiveColor
-            phoneCurrentColor = inactiveColor
-            emailCurrentColor = inactiveColor
-            githubCurrentColor = inactiveColor
-        } else {
-            reset()
+            setTimeout(() => {
+                wordCurrentColor = inactiveColor
+                phoneCurrentColor = inactiveColor
+                emailCurrentColor = inactiveColor
+                githubCurrentColor = inactiveColor
+            }, 100)
+        } else if (isDisabled == false) {
+            setTimeout(() => {
+                reset()
+            }, 100)
         }
     }
 
@@ -24,6 +28,7 @@
     interface displayTextInterface {
         text: string;
         color: string;
+        value: string;
         transform: transformInterface[];
     }
 
@@ -45,10 +50,12 @@
 
     let lastTransformedId = ""
 
+
     const data : dataInterface = {
         phone: {
-            text: "+47_407_21_416",
+            text: "+47 407 21 416",
             color: "#5fa0df",
+            value: "+4740721416",
             transform: [
                 { // +
                     rotation: "10deg",
@@ -125,6 +132,7 @@
         email: {
             text: "Email",
             color: "#ff0000",
+            value: "erik.flatabo@gmail.com",
             transform: [
                 {
                     rotation: "10deg",
@@ -156,6 +164,7 @@
         github: {
             text: "Github",
             color: "#bf00ff",
+            value: "https://github.kireobat.eu",
             transform: [
                 {
                     rotation: "10deg",
@@ -238,7 +247,7 @@ const displayText = (data: displayTextInterface) => {
         const yMove = data.transform[i].y;
         const rotation = data.transform[i].rotation;
 
-        if (data.text[i] === "_") {
+        if (data.text[i] === " ") {
             wordArray.push(`<div class="p-1 mx-0.5 sm:mx-1 lg:mx-2 inline"></div>`);
         } else {
             const delay = i * 0.05; // Adjust this multiplier to change the delay between each span
@@ -248,19 +257,13 @@ const displayText = (data: displayTextInterface) => {
             const rotation = data.transform[i].rotation;
 
             const spanClass = `inline-block`; // Adjust this to match your Tailwind CSS classes
-            const span = `<span class="${spanClass}" style="transform: translate(${xMove}, ${yMove}) rotate(${rotation}); transition-duration: 500ms;">${data.text[i]}</span>`;
+            const span = `<span class="${spanClass}">${data.text[i]}</span>`;
             
             wordArray.push(span);
         }
     }
     return wordArray.join("")
 }
-
-onMount(() => {
-    resetSpans("phone")
-    resetSpans("email")
-    resetSpans("github")
-})
 
 const transformSpans = (id: string) =>{
     if (lastTransformedId === id) {
@@ -274,6 +277,8 @@ const transformSpans = (id: string) =>{
     for (let i = 0; i < spans.length; i++) {
         const span = spans[i] as HTMLElement;
         const transform = data[id].transform[i]
+
+        span.style.transition = `transform 0.5s ease-in-out`;
 
         span.style.transform = `translate(${transform.x}, ${transform.y}) rotate(${transform.rotation})`;
     }
@@ -311,18 +316,18 @@ const resetSpans = (id: string) =>{
     </div>
     <div class="flex justify-between">
         {#if isDisabled == false}
-        <a href="tel:+4740721416" on:mouseover={()=>{hoverPhone(); transformSpans("phone");}} on:focus={hoverPhone} on:mouseleave={()=>{reset(); resetSpans("phone")}} style="color: {phoneCurrentColor}; transition: color 0.3s;" id="phone">{@html displayText(data.phone)}</a>
+        <a href="tel:{data.phone.value}" on:mouseover={()=>{hoverPhone(); transformSpans("phone");}} on:focus={()=>{hoverPhone(); transformSpans("phone");}} on:mouseleave={()=>{reset(); resetSpans("phone")}} style="color: {phoneCurrentColor}; transition: color 0.3s;" id="phone">{@html displayText(data.phone)}</a>
         {:else}
-        <p style="color: {inactiveColor};">+47 407 21 416</p>
+        <p style="color: {phoneCurrentColor}; transition: color 0.3s;">{data.phone.text}</p>
         {/if}
     </div>
     <div class="flex justify-between">
         {#if isDisabled == false}
-        <a href="mailto:erik.flatabo@gmail.com" on:mouseover={()=>{hoverEmail(); transformSpans("email");}} on:focus={hoverEmail} on:mouseleave={()=>{reset(); resetSpans("email")}} style="color: {emailCurrentColor}; transition: color 0.3s;" id="email">{@html displayText(data.email)}</a>
-        <a href="https://github.kireobat.eu" target="_blank" on:mouseover={()=>{hoverGithub(); transformSpans("github");}} on:focus={hoverGithub} on:mouseleave={()=>{reset(); resetSpans("github")}} style="color: {githubCurrentColor}; transition: color 0.3s;" id="github">{@html displayText(data.github)}</a>
+        <a href="mailto:{data.email.value}" on:mouseover={()=>{hoverEmail(); transformSpans("email");}} on:focus={()=>{hoverEmail(); transformSpans("email");}} on:mouseleave={()=>{reset(); resetSpans("email")}} style="color: {emailCurrentColor}; transition: color 0.3s;" id="email">{@html displayText(data.email)}</a>
+        <a href="{data.github.value}" target="_blank" on:mouseover={()=>{hoverGithub(); transformSpans("github");}} on:focus={()=>{hoverGithub(); transformSpans("github");}} on:mouseleave={()=>{reset(); resetSpans("github")}} style="color: {githubCurrentColor}; transition: color 0.3s;" id="github">{@html displayText(data.github)}</a>
         {:else}
-        <p style="color: {inactiveColor};">Email</p>
-        <p style="color: {inactiveColor};">Github</p>
+        <p style="color: {emailCurrentColor}; transition: color 0.3s;">{data.email.text}</p>
+        <p style="color: {githubCurrentColor}; transition: color 0.3s;">{data.github.text}</p>
         {/if}
     </div>
 </div>

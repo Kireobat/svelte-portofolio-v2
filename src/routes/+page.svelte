@@ -14,7 +14,7 @@
         });
         
         windowHeight = window.innerHeight;
-        offset = windowHeight * 1.2;
+        offset = windowHeight * 1.3;
 
         const textContainer = document.getElementById('textContainer');
         if (textContainer) {

@@ -301,7 +301,7 @@ const resetSpans = (id: string) =>{
 
 </script>
 
-<div class="text-white text-5xl font-semibold w-[20.7rem] flex flex-col gap-4 sm:w-[26rem] sm:text-6xl  md:w-[31rem] md:text-7xl lg:w-[41rem] lg:text-8xl">
+<div class="text-white text-4xl font-semibold w-[16.5rem] flex flex-col gap-4 sm:w-[22rem] sm:text-5xl  md:w-[27rem] md:text-6xl lg:w-[33rem] lg:text-7xl font-sofia-sans uppercase">
     <div class="flex justify-between">
         <p style="color: {wordCurrentColor}; transition: color 0.3s;">Erik</p>
         <p  style="color: {wordCurrentColor}; transition: color 0.3s;">Flatabø</p>
@@ -318,7 +318,7 @@ const resetSpans = (id: string) =>{
         {#if isDisabled == false}
         <a href="tel:{data.phone.value}" on:mouseover={()=>{hoverPhone(); transformSpans("phone");}} on:focus={()=>{hoverPhone(); transformSpans("phone");}} on:mouseleave={()=>{reset(); resetSpans("phone")}} style="color: {phoneCurrentColor}; transition: color 0.3s;" id="phone">{@html displayText(data.phone)}</a>
         {:else}
-        <p style="color: {phoneCurrentColor}; transition: color 0.3s;">{data.phone.text}</p>
+        <p style="color: {phoneCurrentColor}; transition: color 0.3s;">{@html displayText(data.phone)}</p>
         {/if}
     </div>
     <div class="flex justify-between">
@@ -326,8 +326,8 @@ const resetSpans = (id: string) =>{
         <a href="mailto:{data.email.value}" on:mouseover={()=>{hoverEmail(); transformSpans("email");}} on:focus={()=>{hoverEmail(); transformSpans("email");}} on:mouseleave={()=>{reset(); resetSpans("email")}} style="color: {emailCurrentColor}; transition: color 0.3s;" id="email">{@html displayText(data.email)}</a>
         <a href="{data.github.value}" target="_blank" on:mouseover={()=>{hoverGithub(); transformSpans("github");}} on:focus={()=>{hoverGithub(); transformSpans("github");}} on:mouseleave={()=>{reset(); resetSpans("github")}} style="color: {githubCurrentColor}; transition: color 0.3s;" id="github">{@html displayText(data.github)}</a>
         {:else}
-        <p style="color: {emailCurrentColor}; transition: color 0.3s;">{data.email.text}</p>
-        <p style="color: {githubCurrentColor}; transition: color 0.3s;">{data.github.text}</p>
+        <p style="color: {emailCurrentColor}; transition: color 0.3s;">{@html displayText(data.email)}</p>
+        <p style="color: {githubCurrentColor}; transition: color 0.3s;">{@html displayText(data.github)}</p>
         {/if}
     </div>
 </div>

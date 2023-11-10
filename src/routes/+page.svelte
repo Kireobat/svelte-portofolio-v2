@@ -59,14 +59,14 @@
         {
             date: 'January 2023 - June 2023',
             title: 'My first job in web development',
-            description: 'I got my first job as a web developer at a company called Bergens Tidene as an unpaid intern.',
+            description: 'I got my first job as a web developer at Bergens Tidene as an unpaid intern.',
             link: 'https://www.bt.no/byliv/i/0Q0OXM/badeplasser-i-bergen-hvor-kan-du-bade-og-hva-er-badetemperaturene',
             linkText: 'Some of my work at Bergens Tidene'
         },
         {
             date: 'August 2023 - August 2025',
             title: 'Apprenticeship at Fiskeridirektoratet',
-            description: 'This apprenticeship is a part of my education at Amalie Skram Videregående Skole. I am learning both frontend and backend development. Mostly using React and Java.',
+            description: 'This apprenticeship is a part of my education at Amalie Skram Videregående Skole. I am learning both frontend and backend development, mostly using React and Java.',
             link: 'https://www.fiskeridir.no/Om-oss/Avdelinger-og-regioner/it-avdelingen/seksjon-systemutvikling/erik-flatebo',
             linkText: 'Read more about my apprenticeship here'
         }

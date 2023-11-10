@@ -60,17 +60,17 @@
                 { // +
                     rotation: "10deg",
                     y: "-1.5rem",
-                    x: "-1.5rem"
+                    x: "-2.5rem"
                 },
                 { // 4
                     rotation: "-3deg",
                     y: "0rem",
-                    x: "-1.5rem"
+                    x: "-2rem"
                 },
                 { // 7
                     rotation: "10deg",
                     y: "-1.5rem",
-                    x: "-1rem"
+                    x: "-1.5rem"
                 },
                 { // 4
                     rotation: "14deg",
@@ -80,37 +80,37 @@
                 { // 0
                     rotation: "-19deg",
                     y: "0rem",
-                    x: "-1rem"
+                    x: "-0.5rem"
                 },
                 { // 7
                     rotation: "-14deg",
                     y: "-1rem",
-                    x: "-1rem"
+                    x: "0rem"
                 },
                 { // 2
                     rotation: "6deg",
                     y: "0rem",
-                    x: "-0.5rem"
+                    x: "0.5rem"
                 },
                 { // 1
-                    rotation: "-3deg",
+                    rotation: "13deg",
                     y: "0.5rem",
-                    x: "0rem"
+                    x: "1rem"
                 },
                 { // 4
-                    rotation: "13deg",
+                    rotation: "9deg",
                     y: "-1.5rem",
-                    x: "0rem"
+                    x: "1.5rem"
                 },
                 { // 1
                     rotation: "-6deg",
                     y: "0rem",
-                    x: "0.5rem"
+                    x: "2rem"
                 },
                 { // 6
-                    rotation: "12deg",
+                    rotation: "15deg",
                     y: "-1rem",
-                    x: "1rem"
+                    x: "2.5rem"
                 },
                 { // do not remove
                     rotation: "-6deg",
@@ -137,27 +137,27 @@
                 {
                     rotation: "10deg",
                     y: "-1rem",
-                    x: "-0.5rem"
+                    x: "-1rem"
                 },
                 {
                     rotation: "-10deg",
-                    y: "0rem",
-                    x: "-1rem"
+                    y: "0.5rem",
+                    x: "-0.5rem"
                 },
                 {
                     rotation: "16deg",
                     y: "-1.5rem",
-                    x: "-0.5rem"
+                    x: "-0rem"
                 },
                 {
                     rotation: "0deg",
                     y: "-0rem",
-                    x: "-0.5rem"
+                    x: "0.5rem"
                 },
                 {
                     rotation: "-15deg",
                     y: "-1.5rem",
-                    x: "0rem"
+                    x: "1rem"
                 },
             ]
         },

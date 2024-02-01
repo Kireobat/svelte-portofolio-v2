@@ -4,9 +4,7 @@ pipeline {
     stages{
         stage('Checkout') {
             steps {
-                withCredentials([string(credentialsId: 'github_token', variable: 'GITHUB_TOKEN')]) {
-                    git url: 'https://x-token-auth:${GITHUB_TOKEN}@github.com/kireobat/svelte-portofolio-v2.git'
-                }
+                git url: 'https://github.com/kireobat/svelte-portofolio-v2.git'
             }
         }
         stage('Build and Push Docker Image') {

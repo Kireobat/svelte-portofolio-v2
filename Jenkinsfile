@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        docker {
+        dockerContainer {
             image 'docker:20.10'
         }
     }
@@ -16,8 +16,8 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
             script {
-                    docker.withRegistry('https://docker.kireobat.eu', 'docker') {
-                        def app = docker.build("kireobat/svelte-portofolio-v2")
+                    dockerContainer.withRegistry('https://docker.kireobat.eu', 'docker') {
+                        def app = dockerContainer.build("kireobat/svelte-portofolio-v2")
                         app.push("${env.BUILD_NUMBER}")
                         app.push("latest")
                     }

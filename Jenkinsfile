@@ -1,6 +1,8 @@
 pipeline {
     agent {
-        any {}
+        docker {
+            image 'docker:20.10'
+        }
     }
     tools {
         nodejs 'node_20.11.0'

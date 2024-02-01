@@ -4,7 +4,7 @@ pipeline {
     stages{
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/kireobat/svelte-portofolio-v2.git'
+                git branch: 'main', url: 'https://github.com/kireobat/svelte-portofolio-v2.git'
             }
         }
         stage('Build and Push Docker Image') {

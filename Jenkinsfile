@@ -1,8 +1,9 @@
 pipeline {
     agent {
-        dockerContainer {
-            image 'node:14-alpine'
-        }
+        any
+    }
+    tools {
+        nodejs 'Node 20.11.0'
     }
     stages{
         stage('Checkout') {

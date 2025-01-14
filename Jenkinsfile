@@ -14,33 +14,34 @@ pipeline {
             }
         }
         stage('Build and Push Docker Image') {
-            steps {
-            script {
-                    dockerContainer.withRegistry('https://docker.kireobat.eu', 'docker') {
-                        def app = dockerContainer.build("kireobat/svelte-portofolio-v2")
-                        app.push("${env.BUILD_NUMBER}")
-                        app.push("latest")
+                steps {
+                script {
+                        dockerContainer.withRegistry('https://docker.kireobat.eu', 'docker') {
+                            def app = dockerContainer.build("kireobat/svelte-portofolio-v2")
+                            app.push("${env.BUILD_NUMBER}")
+                            app.push("latest")
+                        }
                     }
                 }
             }
-        }
 
-        stage('Deploy to Portainer') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'PORTAINER_PASSWORD', usernameVariable: 'PORTAINER_USERNAME')]) {
+        withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'PORTAINER_PASSWORD', usernameVariable: 'PORTAINER_USERNAME')]) {
+            
+            stage('Deploy to Portainer') {
+                steps {
                     script {
-                        def token = sh(script: '''
+                        def token = sh(script: """
                             curl -s -H "Content-Type: application/json" \
                             -d '{"username": "'${PORTAINER_USERNAME}'", "password": "'${PORTAINER_PASSWORD}'"}' \
-                            -X POST http://docker.kireobat.eu/api/auth | jq -r .jwt
-                        ''', returnStdout: true).trim()
-                        sh '''
+                            -X POST https://docker.kireobat.eu/api/auth | jq -r .jwt
+                        """, returnStdout: true).trim()
+                        sh """
                             curl -H "Content-Type: application/json" \
                             -H "Authorization: Bearer ${token}" \
                             -X POST \
                             -d '{"Name": "svelte-portofolio-v2", "Image": "kireobat/svelte-portofolio-v2:latest"}' \
-                            http://docker.kireobat.eu/api/endpoints/1/docker/containers/create
-                        '''
+                            https://docker.kireobat.eu/api/endpoints/2/docker/containers/create
+                        """
                     }
                 }
             }

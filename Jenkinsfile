@@ -48,14 +48,46 @@ pipeline {
                             httpMode: 'POST',
                             contentType: 'APPLICATION_JSON',
                             customHeaders: [[name: 'Authorization', value: "Bearer ${token}"]],
-                            requestBody: """{"Name": "svelte-portofolio-v2", "Image": "kireobat/svelte-portofolio-v2:latest"}"""
+                            requestBody: """{
+                                "Name": "svelte-portofolio-v2", 
+                                "Image": "kireobat/svelte-portofolio-v2:latest",
+                                "HostConfig": {
+                                    "PortBindings": {
+                                        "3000/tcp": [
+                                            {
+                                                "HostPort": ""
+                                            }
+                                        ]
+                                    }
+                                }
+                                }"""
                         )
 
+                        def deployResponseContent = deployResponse.content.toString()
+
                         // Check response for success or failure
-                        if (response.contains("error")) {
+                        if (deployResponseContent.contains("error")) {
                             error "Failed to deploy to Portainer: ${response}"
                         } else {
                             echo "Successfully deployed to Portainer."
+                        }
+
+                        // Extract the container ID from the response
+                        def containerId = new groovy.json.JsonSlurper().parseText(deployResponse.content).Id
+
+                        // Start the container
+                        def startResponse = httpRequest(
+                            url: "https://docker.kireobat.eu/api/endpoints/2/docker/containers/${containerId}/start",
+                            httpMode: 'POST',
+                            contentType: 'APPLICATION_JSON',
+                            customHeaders: [[name: 'Authorization', value: "Bearer ${token}"]]
+                        )
+
+                        // Check response for success or failure
+                        if (startResponse.status != 204) {
+                            error "Failed to start the container: ${startResponse.content}"
+                        } else {
+                            echo "Container started successfully."
                         }
                     }
                 }

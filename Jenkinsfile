@@ -33,20 +33,23 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'PORTAINER_PASSWORD', usernameVariable: 'PORTAINER_USERNAME')]) {
                     script {
                         // Obtain JWT token for Portainer API
-                        def token = sh(script: """
-                            curl -s -H "Content-Type: application/json" \
-                            -d '{"username": "${PORTAINER_USERNAME}", "password": "${PORTAINER_PASSWORD}"}' \
-                            -X POST https://docker.kireobat.eu/api/auth | jq -r .jwt
-                        """, returnStdout: true).trim()
+                        def response = httpRequest(
+                            url: 'https://docker.kireobat.eu/api/auth',
+                            httpMode: 'POST',
+                            contentType: 'APPLICATION_JSON',
+                            requestBody: """{"username": "${PORTAINER_USERNAME}", "password": "${PORTAINER_PASSWORD}"}"""
+                        )
+
+                        def token = readJSON(text: response.content).jwt
 
                         // Deploy the container to Portainer
-                        def response = sh(script: """
-                            curl -s -H "Content-Type: application/json" \
-                            -H "Authorization: Bearer ${token}" \
-                            -X POST \
-                            -d '{"Name": "svelte-portofolio-v2", "Image": "kireobat/svelte-portofolio-v2:latest"}' \
-                            https://docker.kireobat.eu/api/endpoints/2/docker/containers/create
-                        """, returnStdout: true).trim()
+                        def deployResponse = httpRequest(
+                            url: 'https://docker.kireobat.eu/api/endpoints/2/docker/containers/create',
+                            httpMode: 'POST',
+                            contentType: 'APPLICATION_JSON',
+                            customHeaders: [[name: 'Authorization', value: "Bearer ${token}"]],
+                            requestBody: """{"Name": "svelte-portofolio-v2", "Image": "kireobat/svelte-portofolio-v2:latest"}"""
+                        )
 
                         // Check response for success or failure
                         if (response.contains("error")) {

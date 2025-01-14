@@ -20,7 +20,7 @@ pipeline {
             steps {
                 script {
                     // Build and push the Docker image
-                    docker.withRegistry('https://docker.kireobat.eu', 'docker') {
+                    docker.withRegistry('https://hub.docker.com', 'dockerhub') {
                         def app = docker.build("kireobat/svelte-portofolio-v2")
                         app.push("${env.BUILD_NUMBER}")
                         app.push("latest")

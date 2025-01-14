@@ -24,11 +24,9 @@ pipeline {
                     }
                 }
             }
-
-        withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'PORTAINER_PASSWORD', usernameVariable: 'PORTAINER_USERNAME')]) {
-            
-            stage('Deploy to Portainer') {
-                steps {
+        stage('Deploy to Portainer') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'PORTAINER_PASSWORD', usernameVariable: 'PORTAINER_USERNAME')]) {
                     script {
                         def token = sh(script: """
                             curl -s -H "Content-Type: application/json" \

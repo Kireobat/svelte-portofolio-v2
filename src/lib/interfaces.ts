@@ -6,4 +6,6 @@ export interface TimelineItemInterface {
     linkText?: string;
 }
 
-export interface TimelineInterface extends Array<TimelineItemInterface> {}
+export interface TimelineInterface {
+    data: TimelineItemInterface[];
+}

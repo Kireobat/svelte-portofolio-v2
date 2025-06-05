@@ -1,5 +1,9 @@
 <script lang="ts">
-    export let svgFill: string = 'white';
+    interface Props {
+        svgFill: string;
+    }
+
+    let { svgFill }: Props  = $props();
 </script>
 
 <div class="ml-4 mb-4 absolute bottom-0">

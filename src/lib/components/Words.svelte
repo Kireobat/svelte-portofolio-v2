@@ -2,9 +2,13 @@
     import { onMount } from "svelte";
     import Layout from "../../routes/+layout.svelte";
 
-    export let isDisabled: boolean;
+    interface Props {
+        isDisabled: boolean;
+    }
 
-    $: {
+    let {isDisabled}: Props = $props();
+
+    $effect(() => {
         if (isDisabled == true) {
             setTimeout(() => {
                 wordCurrentColor = inactiveColor;
@@ -17,7 +21,7 @@
                 reset();
             }, 100);
         }
-    }
+    })
 
     interface transformInterface {
         rotation: string;
@@ -42,10 +46,10 @@
     const normalColor = "#ffffff";
     const inactiveColor = "#141414";
 
-    let wordCurrentColor = normalColor;
-    let phoneCurrentColor = normalColor;
-    let emailCurrentColor = normalColor;
-    let githubCurrentColor = normalColor;
+    let wordCurrentColor: string = $state(normalColor);
+    let phoneCurrentColor: string = $state(normalColor);
+    let emailCurrentColor: string = $state(normalColor);
+    let githubCurrentColor: string = $state(normalColor);
 
     let lastTransformedId = "";
 
@@ -284,8 +288,6 @@
             return;
         }
 
-        console.log("transform spans with id: " + id);
-
         const spans = document.querySelectorAll(`#${id} span`);
 
         for (let i = 0; i < spans.length; i++) {
@@ -302,7 +304,6 @@
 
     const resetSpans = (id: string) => {
         const spans = document.querySelectorAll(`#${id} span`);
-        console.log("reset spans with id: " + id);
 
         for (let i = 0; i < spans.length; i++) {
             const span = spans[i] as HTMLElement;
@@ -339,15 +340,15 @@
         {#if isDisabled == false}
             <a
                 href="tel:{data.phone.value}"
-                on:mouseover={() => {
+                onmouseover={() => {
                     hoverPhone();
                     transformSpans("phone");
                 }}
-                on:focus={() => {
+                onfocus={() => {
                     hoverPhone();
                     transformSpans("phone");
                 }}
-                on:mouseleave={() => {
+                onmouseleave={() => {
                     reset();
                     resetSpans("phone");
                 }}
@@ -364,15 +365,15 @@
         {#if isDisabled == false}
             <a
                 href="mailto:{data.email.value}"
-                on:mouseover={() => {
+                onmouseover={() => {
                     hoverEmail();
                     transformSpans("email");
                 }}
-                on:focus={() => {
+                onfocus={() => {
                     hoverEmail();
                     transformSpans("email");
                 }}
-                on:mouseleave={() => {
+                onmouseleave={() => {
                     reset();
                     resetSpans("email");
                 }}
@@ -382,15 +383,15 @@
             <a
                 href={data.github.value}
                 target="_blank"
-                on:mouseover={() => {
+                onmouseover={() => {
                     hoverGithub();
                     transformSpans("github");
                 }}
-                on:focus={() => {
+                onfocus={() => {
                     hoverGithub();
                     transformSpans("github");
                 }}
-                on:mouseleave={() => {
+                onmouseleave={() => {
                     reset();
                     resetSpans("github");
                 }}

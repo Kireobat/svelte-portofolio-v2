@@ -1,12 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'docker:20.10'
-        }
-    }
-    tools {
-        nodejs 'node_20.11.0'
-    }
+    agent any
     stages {
         stage('Checkout') {
             steps {
@@ -32,63 +25,102 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'PORTAINER_PASSWORD', usernameVariable: 'PORTAINER_USERNAME')]) {
                     script {
-                        // Obtain JWT token for Portainer API
-                        def response = httpRequest(
-                            url: 'https://docker.kireobat.eu/api/auth',
-                            httpMode: 'POST',
-                            contentType: 'APPLICATION_JSON',
-                            requestBody: """{"username": "${PORTAINER_USERNAME}", "password": "${PORTAINER_PASSWORD}"}"""
-                        )
+                        // =============================================
+                        // Define functions as closure variables FIRST
+                        // =============================================
+                        def getPortainerToken = { username, password ->
+                            def response = httpRequest(
+                                url: 'https://docker.kireobat.eu/api/auth',
+                                httpMode: 'POST',
+                                contentType: 'APPLICATION_JSON',
+                                requestBody: """{"username": "${username}", "password": "${password}"}"""
+                            )
+                            return readJSON(text: response.content).jwt
+                        }
 
-                        def token = readJSON(text: response.content).jwt
+                        def findContainerByName = { token, name ->
+                            def response = httpRequest(
+                                url: "https://docker.kireobat.eu/api/endpoints/2/docker/containers/json",
+                                httpMode: 'GET',
+                                contentType: 'APPLICATION_JSON',
+                                customHeaders: [[name: 'Authorization', value: "Bearer ${token}"]]
+                            )
+                            def containers = readJSON(text: response.content)
+                            containers.find { container ->
+                                container.Names.any { it == "/${name}" }
+                            }
+                        }
 
-                        // Deploy the container to Portainer
-                        def deployResponse = httpRequest(
-                            url: 'https://docker.kireobat.eu/api/endpoints/2/docker/containers/create',
-                            httpMode: 'POST',
-                            contentType: 'APPLICATION_JSON',
-                            customHeaders: [[name: 'Authorization', value: "Bearer ${token}"]],
-                            requestBody: """{
-                                "Name": "svelte-portofolio-v2", 
-                                "Image": "kireobat/svelte-portofolio-v2:latest",
-                                "HostConfig": {
-                                    "PortBindings": {
-                                        "3000/tcp": [
-                                            {
-                                                "HostPort": ""
-                                            }
-                                        ]
+                        def extractHostPort = { container ->
+                            def portBindings = container.HostConfig?.PortBindings?.'3000/tcp'
+                            portBindings ? portBindings[0].HostPort : null
+                        }
+
+                        def stopAndRemoveContainer = { token, containerId ->
+                            httpRequest(
+                                url: "https://docker.kireobat.eu/api/endpoints/2/docker/containers/${containerId}/stop",
+                                httpMode: 'POST',
+                                contentType: 'APPLICATION_JSON',
+                                customHeaders: [[name: 'Authorization', value: "Bearer ${token}"]]
+                            )
+                            httpRequest(
+                                url: "https://docker.kireobat.eu/api/endpoints/2/docker/containers/${containerId}",
+                                httpMode: 'DELETE',
+                                contentType: 'APPLICATION_JSON',
+                                customHeaders: [[name: 'Authorization', value: "Bearer ${token}"]],
+                                requestBody: '{"force": true}'
+                            )
+                        }
+
+                        def createContainer = { token, name, hostPort ->
+                            echo "hostPort: ${hostPort}"
+                            def encodedName = URLEncoder.encode(name, 'UTF-8')
+                            def deployResponse = httpRequest(
+                                url: "https://docker.kireobat.eu/api/endpoints/2/docker/containers/create?name=${encodedName}",
+                                httpMode: 'POST',
+                                contentType: 'APPLICATION_JSON',
+                                customHeaders: [[name: 'Authorization', value: "Bearer ${token}"]],
+                                requestBody: """{
+                                    "Image": "kireobat/svelte-portofolio-v2:latest",
+                                    "HostConfig": {
+                                        "PortBindings": {
+                                            "3000/tcp": [${hostPort ? '{"HostPort": "' + hostPort + '"}' : '{}'}]
+                                        }
                                     }
-                                }
                                 }"""
-                        )
-
-                        def deployResponseContent = deployResponse.content.toString()
-
-                        // Check response for success or failure
-                        if (deployResponseContent.contains("error")) {
-                            error "Failed to deploy to Portainer: ${response}"
-                        } else {
-                            echo "Successfully deployed to Portainer."
+                            )
+                            readJSON(text: deployResponse.content).Id
                         }
 
-                        // Extract the container ID from the response
-                        def containerId = new groovy.json.JsonSlurper().parseText(deployResponse.content).Id
+                        def startContainer = { token, containerId ->
+                            httpRequest(
+                                url: "https://docker.kireobat.eu/api/endpoints/2/docker/containers/${containerId}/start",
+                                httpMode: 'POST',
+                                contentType: 'APPLICATION_JSON',
+                                customHeaders: [[name: 'Authorization', value: "Bearer ${token}"]]
+                            )
+                        }
 
-                        // Start the container
-                        def startResponse = httpRequest(
-                            url: "https://docker.kireobat.eu/api/endpoints/2/docker/containers/${containerId}/start",
-                            httpMode: 'POST',
-                            contentType: 'APPLICATION_JSON',
-                            customHeaders: [[name: 'Authorization', value: "Bearer ${token}"]]
+                        // =============================================
+                        // Main execution logic AFTER function definitions
+                        // =============================================
+                        def token = getPortainerToken(PORTAINER_USERNAME, PORTAINER_PASSWORD) // Fix credentials here
+                        def containerName = "svelte-portofolio-v2"
+                        def hostPort = null
+
+                        def existingContainer = findContainerByName(token, containerName)
+                        if (existingContainer) {
+                            hostPort = extractHostPort(existingContainer)
+                            stopAndRemoveContainer(token, existingContainer.Id)
+                        }
+
+                        def containerId = createContainer(
+                            token,
+                            containerName,
+                            hostPort
                         )
 
-                        // Check response for success or failure
-                        if (startResponse.status != 204) {
-                            error "Failed to start the container: ${startResponse.content}"
-                        } else {
-                            echo "Container started successfully."
-                        }
+                        startContainer(token, containerId)
                     }
                 }
             }

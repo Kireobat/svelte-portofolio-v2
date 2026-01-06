@@ -6,7 +6,7 @@
         isDisabled: boolean;
     }
 
-    let {isDisabled}: Props = $props();
+    let { isDisabled }: Props = $props();
 
     $effect(() => {
         if (isDisabled == true) {
@@ -21,7 +21,7 @@
                 reset();
             }, 100);
         }
-    })
+    });
 
     interface transformInterface {
         rotation: string;
@@ -265,7 +265,7 @@
 
             if (data.text[i] === " ") {
                 wordArray.push(
-                    `<div class="p-1 mx-[0.165rem] sm:mx-[0.27rem] md:mx-1.5 lg:mx-[0.575rem] inline"></div>`,
+                    `<div class="p-1 mx-[0.165rem] sm:mx-[0.27rem] md:mx-1.5 lg:mx-[0.575rem] inline"></div>`
                 );
             } else {
                 const delay = i * 0.05; // Adjust this multiplier to change the delay between each span
@@ -316,7 +316,7 @@
 </script>
 
 <div
-    class="text-white text-4xl font-semibold w-[16.5rem] flex flex-col gap-4 sm:w-[22rem] sm:text-5xl md:w-[27rem] md:text-6xl lg:w-[33rem] lg:text-7xl font-sofia-sans uppercase"
+    class="text-white text-4xl font-semibold w-[18rem] flex flex-col gap-4 sm:w-[24rem] sm:text-5xl md:w-[30rem] md:text-6xl lg:w-[36rem] lg:text-7xl font-sofia-sans uppercase"
 >
     <div class="flex justify-between">
         <p style="color: {wordCurrentColor}; transition: color 0.3s;">Erik</p>

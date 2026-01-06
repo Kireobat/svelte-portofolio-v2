@@ -67,8 +67,8 @@
                 date: 'March 2025',
                 title: 'Created and launched fish-time',
                 description: 'Fish-time is a calendar app built in 7 days as the main part of my test-fagprøve. It is built with Sveltekit, TS, Tailwind, Kotlin, Spring and Postgres.',
-                link: 'https://fish-time.kireobat.eu/',
-                linkText: 'Check out fish-time here'
+                link: 'https://github.com/Kireobat/testfagprove',
+                linkText: 'Github repo for test-fagprøve'
             },
             {
                 date: 'June 2025',
@@ -76,6 +76,18 @@
                 description: 'I will take my fagprøve (final exam) next week as a part of my apprenticeship and my secondary education.',
                 link: 'https://shorturl.at/lIYc4',
                 linkText: 'Finals week or my final week? Stay tuned next week... Let\'s see if I pass my classes or I pass away.'
+            },
+            {
+                date: 'June 2025',
+                title: 'Fagprøve completed',
+                description: 'I completed my fagprøve with top marks! I made a inventory management system called tool-tracker built with Sveltekit, TS, Tailwind, Kotlin, Spring and Postgres.',
+                link: 'https://github.com/Kireobat/fagprove',
+                linkText: 'Github repo for fagprøve'
+            },
+            {
+                date: 'August 2025 - May 2026',
+                title: 'A break from work',
+                description: 'After achieving top marks on my fagprøve, I decided to spend a year on Folkehøyskole since it is something that won\'t be possible to do later in life.'
             }
         ]
     }

@@ -25,26 +25,36 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'jenkins-arcane-api-key', variable: 'ARCANE_API_KEY')]) {
                     script {
+                        echo "Starting deployment to Arcane..."
 
                         def findContainerIdByName = { token, name ->
+                            echo "Looking up Arcane container: ${name}"
                             def response = httpRequest(
                                 url: "https://docker.kireobat.eu/api/environments/0/containers?search=${name}",
                                 httpMode: 'GET',
                                 contentType: 'APPLICATION_JSON',
                                 customHeaders: [[name: 'Authorization', value: "Bearer ${token}"]]
                             )
-                            return readJSON(text: response.content.data[0].id)
+                            return response.content.data[0].id
                             
                         }
 
                         def updateContainer = { token, containerId ->
+                            echo "Triggering Arcane update for container ID: ${containerId}"
                             def response = httpRequest(
                                 url: "https://docker.kireobat.eu/api/environments/0/containers/${containerId}/update",
                                 httpMode: 'POST',
                                 contentType: 'APPLICATION_JSON',
                                 customHeaders: [[name: 'Authorization', value: "Bearer ${token}"]],
                             )
+                            echo "Arcane update request completed for container ID: ${containerId}"
                         }
+
+                        def containerName = 'svelte-portofolio-v2'
+                        def containerId = findContainerIdByName(ARCANE_API_KEY, containerName)
+                        echo "Found Arcane container ${containerName} with ID: ${containerId}"
+                        updateContainer(ARCANE_API_KEY, containerId)
+                        echo "Deployment to Arcane finished."
 
                     }
                 }

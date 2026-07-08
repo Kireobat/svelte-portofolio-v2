@@ -33,7 +33,7 @@ pipeline {
                                 url: "https://docker.kireobat.eu/api/environments/0/containers?search=${name}",
                                 httpMode: 'GET',
                                 contentType: 'APPLICATION_JSON',
-                                customHeaders: [[name: 'Authorization', value: "Bearer ${token}"]]
+                                customHeaders: [[name: 'Authorization', value: 'Bearer ' + token]]
                             )
                             return response.content.data[0].id
                             
@@ -45,7 +45,7 @@ pipeline {
                                 url: "https://docker.kireobat.eu/api/environments/0/containers/${containerId}/update",
                                 httpMode: 'POST',
                                 contentType: 'APPLICATION_JSON',
-                                customHeaders: [[name: 'Authorization', value: "Bearer ${token}"]],
+                                customHeaders: [[name: 'Authorization', value: 'Bearer ' + token]],
                             )
                             echo "Arcane update request completed for container ID: ${containerId}"
                         }

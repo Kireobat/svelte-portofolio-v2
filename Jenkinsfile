@@ -40,6 +40,24 @@ pipeline {
                             
                         }
 
+                        def createContainer = { token, name, image, ports ->
+                            echo "Creating Arcane container: ${name} with image: ${image}"
+                            def payload = [
+                                name: name,
+                                image: image,
+                                ports: ports
+                            ]
+                            def response = httpRequest(
+                                url: "https://docker.kireobat.eu/api/environments/0/containers",
+                                httpMode: 'POST',
+                                contentType: 'APPLICATION_JSON',
+                                requestBody: writeJSON(returnText: true, json: payload),
+                                customHeaders: [[name: 'X-API-Key', value: token]]
+                            )
+                            def body = readJSON(text: response.content) 
+                            return body?.data?.id
+                        }
+
                         def redeployContainer = { token, containerId ->
                             echo "Triggering Arcane redeployment for container ID: ${containerId}"
                             def response = httpRequest(
@@ -52,9 +70,30 @@ pipeline {
                         }
 
                         def containerName = 'svelte-portofolio-v2'
+                        def ports = [
+                            {
+                                "ip": "0.0.0.0"
+                                "privatePort": 3000, // container port
+                                "publicPort": 30013, // host port
+                                "type": "tcp"
+                            },
+                            {
+                                "ip": "::"
+                                "privatePort": 3000, // container port
+                                "publicPort": 30013, // host port
+                                "type": "tcp"
+                            }
+                        ]
+
                         def containerId = findContainerIdByName(ARCANE_API_KEY, containerName)
-                        echo "Found Arcane container ${containerName} with ID: ${containerId}"
-                        redeployContainer(ARCANE_API_KEY, containerId)
+                        if (!containerId) {
+                            echo "Arcane container ${containerName} not found. Creating a new container..."
+                            containerId = createContainer(ARCANE_API_KEY, containerName, "kireobat/${containerName}:latest", ports)
+                            echo "Created Arcane container ${containerName} with ID: ${containerId}"
+                        } else {
+                            echo "Found Arcane container ${containerName} with ID: ${containerId}"
+                            redeployContainer(ARCANE_API_KEY, containerId)
+                        }
                         echo "Deployment to Arcane finished."
 
                     }

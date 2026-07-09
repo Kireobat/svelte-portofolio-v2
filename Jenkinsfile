@@ -36,7 +36,7 @@ pipeline {
                                 customHeaders: [[name: 'Authorization', value: 'Bearer ' + token]]
                             )
                             def body = readJSON(text: response.content)
-                            return body?.data?[0]?.id
+                            return body?.data?.get(0)?.id
                             
                         }
 
@@ -46,7 +46,7 @@ pipeline {
                                 url: "https://docker.kireobat.eu/api/environments/0/containers/${containerId}/redeploy",
                                 httpMode: 'POST',
                                 contentType: 'APPLICATION_JSON',
-                                customHeaders: [[name: 'Authorization', value: 'Bearer ' + token]],
+                                customHeaders: [[name: 'Authorization', value: 'Bearer ' + token]]
                             )
                             echo "Arcane redeployment request completed for container ID: ${containerId}"
                         }

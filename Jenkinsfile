@@ -35,25 +35,26 @@ pipeline {
                                 contentType: 'APPLICATION_JSON',
                                 customHeaders: [[name: 'Authorization', value: 'Bearer ' + token]]
                             )
-                            return response.content.data[0].id
+                            def body = readJSON(text: response.content)
+                            return body?.data?[0]?.id
                             
                         }
 
-                        def updateContainer = { token, containerId ->
-                            echo "Triggering Arcane update for container ID: ${containerId}"
+                        def redeployContainer = { token, containerId ->
+                            echo "Triggering Arcane redeployment for container ID: ${containerId}"
                             def response = httpRequest(
-                                url: "https://docker.kireobat.eu/api/environments/0/containers/${containerId}/update",
+                                url: "https://docker.kireobat.eu/api/environments/0/containers/${containerId}/redeploy",
                                 httpMode: 'POST',
                                 contentType: 'APPLICATION_JSON',
                                 customHeaders: [[name: 'Authorization', value: 'Bearer ' + token]],
                             )
-                            echo "Arcane update request completed for container ID: ${containerId}"
+                            echo "Arcane redeployment request completed for container ID: ${containerId}"
                         }
 
                         def containerName = 'svelte-portofolio-v2'
                         def containerId = findContainerIdByName(ARCANE_API_KEY, containerName)
                         echo "Found Arcane container ${containerName} with ID: ${containerId}"
-                        updateContainer(ARCANE_API_KEY, containerId)
+                        redeployContainer(ARCANE_API_KEY, containerId)
                         echo "Deployment to Arcane finished."
 
                     }
